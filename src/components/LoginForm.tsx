@@ -36,7 +36,7 @@ export default function LoginForm(_: TLoginFormProps) {
 
         if (res.data && res.data.token) {
           // login is successful
-          setLoginDetails(res.data.token);
+          setLoginDetails(res.data);
           storage.storeToken(res.data.token);
         }
       }

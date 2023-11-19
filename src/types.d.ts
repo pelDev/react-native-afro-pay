@@ -7,6 +7,11 @@ export type LoginFormInput = {
   password: string;
 };
 
+export type User = {
+  email: string;
+};
+
 export type TAmountCardProps = {
   amount: number;
+  user: User | null;
 };

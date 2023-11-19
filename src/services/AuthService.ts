@@ -5,4 +5,8 @@ async function postLogin(data: LoginFormInput) {
   return axiosInstance.post('/auth/login', data);
 }
 
-export { postLogin };
+async function getLoggedInUser() {
+  return axiosInstance.get('/auth/me');
+}
+
+export { postLogin, getLoggedInUser };

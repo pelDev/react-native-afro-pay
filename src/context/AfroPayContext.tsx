@@ -2,6 +2,8 @@ import React from 'react';
 import { createContext, useState, type ReactNode, useCallback } from 'react';
 import * as storage from '../utils/AsyncStorage';
 import type BottomSheet from '@gorhom/bottom-sheet';
+import type { User } from '../types';
+import { getLoggedInUser } from '../services/AuthService';
 
 const sheetRef = React.createRef<BottomSheet>();
 
@@ -11,9 +13,11 @@ export type AfroPayContextType = {
   token: string | null;
   sheetRef: React.RefObject<BottomSheet>;
   currentAmount: number;
+  user: User | null;
   setCurrentAmount: (amount: number) => void;
-  setLoginDetails: (token: string) => void;
+  setLoginDetails: (data: any) => void;
   setupStoredCreds: () => void;
+  logout: () => void;
 };
 
 export const AfroPayContext = createContext<AfroPayContextType | undefined>(
@@ -29,18 +33,21 @@ export function AfroPayProvider({ children }: TAfroPayProviderProps) {
   const [currentAmount, setCurrentAmount] = useState(0);
   const [loggedIn, setLoggedIn] = useState(false);
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const setLoginDetails = useCallback(
-    (rToken: string | null) => {
-      if (rToken) {
+    (data: any) => {
+      if (data?.token) {
         setLoggedIn(true);
-        setToken(rToken);
+        setToken(data.token);
+        setUser(data.user);
       } else {
         setLoggedIn(false);
         setToken(null);
+        setUser(null);
       }
     },
-    [setLoggedIn, setToken]
+    [setLoggedIn, setToken, setUser]
   );
 
   const setupStoredCreds = useCallback(async () => {
@@ -50,6 +57,12 @@ export function AfroPayProvider({ children }: TAfroPayProviderProps) {
       if (storedToken) {
         setLoggedIn(true);
         setToken(storedToken);
+
+        const res = await getLoggedInUser();
+
+        if (res.data.user) {
+          setUser(res.data.user);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -57,6 +70,11 @@ export function AfroPayProvider({ children }: TAfroPayProviderProps) {
       setLoading(false);
     }
   }, [setLoading, setLoggedIn, setToken]);
+
+  const logout = useCallback(async () => {
+    setLoginDetails(null);
+    await storage.removeToken();
+  }, [setLoginDetails]);
 
   return (
     <AfroPayContext.Provider
@@ -66,9 +84,11 @@ export function AfroPayProvider({ children }: TAfroPayProviderProps) {
         token,
         sheetRef,
         currentAmount,
+        user,
         setupStoredCreds,
         setLoginDetails,
         setCurrentAmount,
+        logout,
       }}
     >
       {children}

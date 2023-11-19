@@ -5,16 +5,25 @@ import {
   type AfroPayContextType,
 } from '../context/AfroPayContext';
 import { COLORS, SHEET_POINTS, Spacing } from '../utils/constants';
-import { StyleSheet, View, ActivityIndicator, Image } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Image,
+  Text,
+  Pressable,
+} from 'react-native';
 import { useAfroPayContext } from '../hooks/useAfroPayContext';
 import LoginForm from '../components/LoginForm';
 import AmountCard from '../components/AmountCard';
 import CustomButton from '../components/Button/CustomButton';
 
 const SheetContent = () => {
-  const { loading, loggedIn, currentAmount } = useContext(
+  const { loading, loggedIn, currentAmount, user, logout } = useContext(
     AfroPayContext
   ) as AfroPayContextType;
+
+  const handleSwitchAccount = () => logout();
 
   const [paying, setLoading] = useState(false);
   const handlePay = async () => {
@@ -39,7 +48,7 @@ const SheetContent = () => {
     <View style={styles.contentContainer}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
 
-      <AmountCard amount={currentAmount} />
+      <AmountCard amount={currentAmount} user={user} />
 
       <CustomButton
         title="Pay"
@@ -47,6 +56,10 @@ const SheetContent = () => {
         loading={paying}
         disabled={paying}
       />
+
+      <Pressable onPress={handleSwitchAccount} disabled={paying}>
+        <Text>Switch account</Text>
+      </Pressable>
     </View>
   );
 };

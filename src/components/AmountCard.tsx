@@ -5,12 +5,13 @@ import { Text } from 'react-native';
 import { COLORS, FontSize, Spacing } from '../utils/constants';
 
 const AmountCard = (props: TAmountCardProps) => {
-  const { amount } = props;
+  const { amount, user } = props;
 
   return (
     <View style={styles.container}>
       <Text style={styles.sub}>Pay</Text>
       <Text style={styles.amount}>${amount}</Text>
+      {user && <Text style={styles.sub}>{user.email}</Text>}
     </View>
   );
 };
