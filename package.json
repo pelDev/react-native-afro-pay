@@ -1,6 +1,6 @@
 {
   "name": "react-native-afro-pay",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "React native sdk for afro pay",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -39,7 +39,10 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/pelDev/react-native-afro-pay",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pelDev/react-native-afro-pay.git"
+  },
   "author": "crazy_dev <pelumidevelops18@gmail.com> (https://github.com/pelDev)",
   "license": "MIT",
   "bugs": {
@@ -75,7 +78,9 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-gesture-handler": "^2.13.4",
+    "react-native-reanimated": "*"
   },
   "workspaces": [
     "example"
@@ -161,8 +166,9 @@
     "@gorhom/bottom-sheet": "^4",
     "@react-native-async-storage/async-storage": "^1.19.5",
     "axios": "^1.6.2",
-    "react-native-gesture-handler": "^2.13.4",
-    "react-native-reanimated": "3.3.0",
     "react-native-safe-area-context": "^4.7.4"
+  },
+  "directories": {
+    "example": "example"
   }
 }

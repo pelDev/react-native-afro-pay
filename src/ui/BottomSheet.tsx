@@ -48,7 +48,11 @@ const SheetContent = () => {
     <View style={styles.contentContainer}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
 
+      <View style={styles.spacer} />
+
       <AmountCard amount={currentAmount} user={user} />
+
+      <View style={styles.spacer} />
 
       <CustomButton
         title="Pay"
@@ -56,6 +60,8 @@ const SheetContent = () => {
         loading={paying}
         disabled={paying}
       />
+
+      <View style={styles.spacer} />
 
       <Pressable onPress={handleSwitchAccount} disabled={paying}>
         <Text>Switch account</Text>
@@ -91,7 +97,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     padding: 24,
-    gap: Spacing,
   },
   loadContainer: {
     flex: 1,
@@ -105,5 +110,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 60,
     objectFit: 'contain',
+  },
+  spacer: {
+    height: Spacing,
   },
 });

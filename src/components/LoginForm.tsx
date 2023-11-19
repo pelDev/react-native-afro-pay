@@ -51,6 +51,8 @@ export default function LoginForm(_: TLoginFormProps) {
     <View style={styles.container}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
 
+      <View style={styles.spacer} />
+
       <CustomTextInput
         label="Email Address"
         keyboardType="email-address"
@@ -59,12 +61,16 @@ export default function LoginForm(_: TLoginFormProps) {
         onChangeText={handleChange('email')}
       />
 
+      <View style={styles.spacer} />
+
       <CustomPasswordInput
         label="Password"
         placeholder="********"
         value={data.password}
         onChangeText={handleChange('password')}
       />
+
+      <View style={styles.spacer} />
 
       <CustomButton title="Sign In" onPress={handleSubmit} disabled={loading} />
     </View>
@@ -76,12 +82,14 @@ const styles = StyleSheet.create({
     marginVertical: Spacing * 2,
     display: 'flex',
     flexDirection: 'column',
-    gap: Spacing * 1.5,
     padding: Spacing,
   },
   logo: {
     width: '100%',
     height: 60,
     objectFit: 'contain',
+  },
+  spacer: {
+    height: Spacing * 1.5,
   },
 });
