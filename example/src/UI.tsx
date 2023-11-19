@@ -9,7 +9,7 @@ export const UI = () => {
     <SafeAreaView style={styles.container}>
       <View>
         <Text>Hi There!</Text>
-        <Button title="Open" onPress={() => initiatePayment(90)} />
+        <Button title="Pay with afropay" onPress={() => initiatePayment(90)} />
       </View>
 
       <AfroPay />

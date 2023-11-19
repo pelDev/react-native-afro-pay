@@ -1,12 +1,12 @@
 import { useAfroPayContext } from './useAfroPayContext';
 
 export function useAfroPay() {
-  const { sheetRef, setupStoredCreds } = useAfroPayContext();
+  const { sheetRef, setupStoredCreds, setCurrentAmount } = useAfroPayContext();
 
-  const initiatePayment = (_: number) => {
+  const initiatePayment = (amount: number) => {
     if (sheetRef.current) {
-      sheetRef.current.snapToIndex(2);
-
+      sheetRef.current.snapToIndex(1);
+      setCurrentAmount(amount);
       setupStoredCreds();
     }
   };

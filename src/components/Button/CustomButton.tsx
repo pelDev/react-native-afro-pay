@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   TouchableHighlight,
@@ -9,10 +10,11 @@ import { COLORS, FontSize } from '../../utils/constants';
 
 type TCustomButtonProps = {
   title: string;
+  loading?: boolean;
 } & TouchableHighlightProps;
 
 export default function CustomButton(props: TCustomButtonProps) {
-  const { title, ...others } = props;
+  const { title, loading, ...others } = props;
 
   return (
     <TouchableHighlight
@@ -24,7 +26,7 @@ export default function CustomButton(props: TCustomButtonProps) {
       {...others}
     >
       <Text style={[styles.title, others.disabled && { color: COLORS.text }]}>
-        {title}
+        {!loading ? title : <ActivityIndicator color={COLORS.white} />}
       </Text>
     </TouchableHighlight>
   );
@@ -33,6 +35,7 @@ export default function CustomButton(props: TCustomButtonProps) {
 const styles = StyleSheet.create({
   wrapper: {
     height: 50,
+    width: '100%',
     borderRadius: 14,
     overflow: 'hidden',
     display: 'flex',

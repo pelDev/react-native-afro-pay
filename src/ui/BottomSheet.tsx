@@ -1,18 +1,27 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import {
   AfroPayContext,
   type AfroPayContextType,
 } from '../context/AfroPayContext';
-import { COLORS, SHEET_POINTS } from '../utils/constants';
-import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
+import { COLORS, SHEET_POINTS, Spacing } from '../utils/constants';
+import { StyleSheet, View, ActivityIndicator, Image } from 'react-native';
 import { useAfroPayContext } from '../hooks/useAfroPayContext';
 import LoginForm from '../components/LoginForm';
+import AmountCard from '../components/AmountCard';
+import CustomButton from '../components/Button/CustomButton';
 
 const SheetContent = () => {
-  const { loading, loggedIn } = useContext(
+  const { loading, loggedIn, currentAmount } = useContext(
     AfroPayContext
   ) as AfroPayContextType;
+
+  const [paying, setLoading] = useState(false);
+  const handlePay = async () => {
+    setLoading(true);
+
+    setLoading(false);
+  };
 
   if (loading) {
     return (
@@ -28,7 +37,16 @@ const SheetContent = () => {
 
   return (
     <View style={styles.contentContainer}>
-      <Text>Logged In! Confirm Payment</Text>
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+
+      <AmountCard amount={currentAmount} />
+
+      <CustomButton
+        title="Pay"
+        onPress={handlePay}
+        loading={paying}
+        disabled={paying}
+      />
     </View>
   );
 };
@@ -57,9 +75,10 @@ export const BottomSheetUI = () => {
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    width: 'auto',
+    width: '100%',
     alignItems: 'center',
     padding: 24,
+    gap: Spacing,
   },
   loadContainer: {
     flex: 1,
@@ -68,5 +87,10 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     backgroundColor: '#ccc',
+  },
+  logo: {
+    width: '100%',
+    height: 60,
+    objectFit: 'contain',
   },
 });

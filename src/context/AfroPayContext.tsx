@@ -10,6 +10,8 @@ export type AfroPayContextType = {
   loggedIn: boolean;
   token: string | null;
   sheetRef: React.RefObject<BottomSheet>;
+  currentAmount: number;
+  setCurrentAmount: (amount: number) => void;
   setLoginDetails: (token: string) => void;
   setupStoredCreds: () => void;
 };
@@ -24,7 +26,7 @@ type TAfroPayProviderProps = {
 
 export function AfroPayProvider({ children }: TAfroPayProviderProps) {
   const [loading, setLoading] = useState(true);
-
+  const [currentAmount, setCurrentAmount] = useState(0);
   const [loggedIn, setLoggedIn] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
@@ -63,8 +65,10 @@ export function AfroPayProvider({ children }: TAfroPayProviderProps) {
         loggedIn,
         token,
         sheetRef,
+        currentAmount,
         setupStoredCreds,
         setLoginDetails,
+        setCurrentAmount,
       }}
     >
       {children}
