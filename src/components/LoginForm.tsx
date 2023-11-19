@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   logo: {
     width: '100%',
     height: 60,
-    objectFit: 'contain',
+    resizeMode: 'contain',
   },
   spacer: {
     height: Spacing * 1.5,
