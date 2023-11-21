@@ -12,7 +12,7 @@ export const UI = () => {
         <Button title="Pay with afropay" onPress={() => initiatePayment(90)} />
       </View>
 
-      <AfroPay />
+      <AfroPay onSuccess={() => {}} />
     </SafeAreaView>
   );
 };

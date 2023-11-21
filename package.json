@@ -1,6 +1,6 @@
 {
   "name": "react-native-afro-pay",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "React native sdk for afro pay",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

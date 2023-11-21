@@ -1,7 +1,5 @@
 export type TPayButtonProps = {};
 
-export type TBottomSheetUIProps = {};
-
 export type LoginFormInput = {
   email: string;
   password: string;
@@ -19,5 +17,13 @@ export type TAmountCardProps = {
 
 export type TSuccessProps = {
   message: string;
-  reset: () => void;
+  reset: CallableFunction;
+};
+
+export type TAfroPayProps = {
+  onSuccess: CallableFunction;
+};
+
+export type TBottomSheetUIProps = {
+  onSuccess: CallableFunction;
 };

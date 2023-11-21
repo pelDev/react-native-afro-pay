@@ -24,8 +24,9 @@ import {
   postPaymentQuote,
   postPaymentTransfer,
 } from '../services/PaymentService';
+import type { TBottomSheetUIProps } from '../types';
 
-const SheetContent = () => {
+const SheetContent = (props: TBottomSheetUIProps) => {
   const { loading, loggedIn, currentAmount, user, logout } = useContext(
     AfroPayContext
   ) as AfroPayContextType;
@@ -70,6 +71,11 @@ const SheetContent = () => {
 
       if (transferRresponse) {
         setSuccess(transferRresponse.data?.message);
+
+        setTimeout(() => {
+          reset();
+          props.onSuccess();
+        }, 3000);
       }
     } catch (error) {
       console.log(error);
@@ -126,7 +132,8 @@ const SheetContent = () => {
   );
 };
 
-export const BottomSheetUI = () => {
+export const BottomSheetUI = (props: TBottomSheetUIProps) => {
+  const { onSuccess } = props;
   const { sheetRef, user, setUser } = useAfroPayContext();
 
   const snapPoints = useMemo(
@@ -155,7 +162,7 @@ export const BottomSheetUI = () => {
       backdropComponent={BottomSheetBackdrop}
       enablePanDownToClose
     >
-      <SheetContent />
+      <SheetContent onSuccess={onSuccess} />
     </BottomSheet>
   );
 };
