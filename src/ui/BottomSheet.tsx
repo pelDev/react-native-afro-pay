@@ -1,9 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import {
-  AfroPayContext,
-  type AfroPayContextType,
-} from '../context/AfroPayContext';
 import { COLORS, SHEET_POINTS, Spacing } from '../utils/constants';
 import {
   StyleSheet,
@@ -27,9 +23,8 @@ import {
 import type { TBottomSheetUIProps } from '../types';
 
 const SheetContent = (props: TBottomSheetUIProps) => {
-  const { loading, loggedIn, currentAmount, user, logout } = useContext(
-    AfroPayContext
-  ) as AfroPayContextType;
+  const { loading, loggedIn, currentAmount, user, logout, sheetRef } =
+    useAfroPayContext();
 
   const handleSwitchAccount = () => logout();
 
@@ -73,6 +68,7 @@ const SheetContent = (props: TBottomSheetUIProps) => {
         setSuccess(transferRresponse.data?.message);
 
         setTimeout(() => {
+          sheetRef.current?.close();
           reset();
           props.onSuccess();
         }, 3000);

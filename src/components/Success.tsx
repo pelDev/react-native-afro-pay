@@ -4,27 +4,15 @@ import type { TSuccessProps } from '../types';
 import { COLORS, FontSize, Spacing } from '../utils/constants';
 import { View } from 'react-native';
 import { Text } from 'react-native';
-import CustomButton from './Button/CustomButton';
-import { useAfroPayContext } from '../hooks/useAfroPayContext';
 
 const Success = (props: TSuccessProps) => {
-  const { message, reset } = props;
-
-  const { sheetRef } = useAfroPayContext();
+  const { message } = props;
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
         <Text style={styles.text}>{message}</Text>
       </View>
-
-      <CustomButton
-        title="Close"
-        onPress={() => {
-          sheetRef.current?.close();
-          reset();
-        }}
-      />
     </View>
   );
 };
