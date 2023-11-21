@@ -26,7 +26,7 @@ export default function CustomButton(props: TCustomButtonProps) {
       {...others}
     >
       <Text style={[styles.title, others.disabled && { color: COLORS.text }]}>
-        {!loading ? title : <ActivityIndicator color={COLORS.white} />}
+        {!loading ? title : <ActivityIndicator color={COLORS.primary} />}
       </Text>
     </TouchableHighlight>
   );

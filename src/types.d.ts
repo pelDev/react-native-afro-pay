@@ -13,5 +13,11 @@ export type User = {
 
 export type TAmountCardProps = {
   amount: number;
+  tax: number | null;
   user: User | null;
+};
+
+export type TSuccessProps = {
+  message: string;
+  reset: () => void;
 };

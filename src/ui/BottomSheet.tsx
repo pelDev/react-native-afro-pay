@@ -17,8 +17,13 @@ import { useAfroPayContext } from '../hooks/useAfroPayContext';
 import LoginForm from '../components/LoginForm';
 import AmountCard from '../components/AmountCard';
 import CustomButton from '../components/Button/CustomButton';
+import Success from '../components/Success';
 import { useAsyncHandler } from '../middlewares/async';
 import { getLoggedInUser } from '../services/AuthService';
+import {
+  postPaymentQuote,
+  postPaymentTransfer,
+} from '../services/PaymentService';
 
 const SheetContent = () => {
   const { loading, loggedIn, currentAmount, user, logout } = useContext(
@@ -27,11 +32,56 @@ const SheetContent = () => {
 
   const handleSwitchAccount = () => logout();
 
-  const [paying, setLoading] = useState(false);
-  const handlePay = async () => {
-    setLoading(true);
+  const httpPostPaymentQuote =
+    useAsyncHandler<typeof postPaymentQuote>(postPaymentQuote);
 
+  const httpPostPaymentTransfer =
+    useAsyncHandler<typeof postPaymentTransfer>(postPaymentTransfer);
+
+  const [paying, setLoading] = useState(false);
+  const [tax, setTax] = useState<number | null>(null);
+  const [success, setSuccess] = useState('');
+
+  const handleQuote = async () => {
+    try {
+      setLoading(true);
+
+      const quoteResponse = await httpPostPaymentQuote(+currentAmount);
+
+      if (!quoteResponse) return;
+
+      setTax(quoteResponse.data.amountToPay - +currentAmount);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePay = async () => {
+    if (!tax) return;
+
+    try {
+      setLoading(true);
+
+      const transferRresponse = await httpPostPaymentTransfer(
+        +currentAmount + tax
+      );
+
+      if (transferRresponse) {
+        setSuccess(transferRresponse.data?.message);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reset = () => {
     setLoading(false);
+    setSuccess('');
+    setTax(null);
   };
 
   if (loading) {
@@ -46,19 +96,23 @@ const SheetContent = () => {
     return <LoginForm />;
   }
 
+  if (success) {
+    return <Success message={success} reset={reset} />;
+  }
+
   return (
     <View style={styles.contentContainer}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
 
       <View style={styles.spacer} />
 
-      <AmountCard amount={currentAmount} user={user} />
+      <AmountCard amount={currentAmount} user={user} tax={tax} />
 
       <View style={styles.spacer} />
 
       <CustomButton
-        title="Pay"
-        onPress={handlePay}
+        title={!tax ? 'Pay' : 'Confirm'}
+        onPress={!tax ? handleQuote : handlePay}
         loading={paying}
         disabled={paying}
       />

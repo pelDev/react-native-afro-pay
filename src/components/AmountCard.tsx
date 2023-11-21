@@ -5,14 +5,17 @@ import { Text } from 'react-native';
 import { COLORS, FontSize, Spacing } from '../utils/constants';
 
 const AmountCard = (props: TAmountCardProps) => {
-  const { amount, user } = props;
+  const { amount, user, tax } = props;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.sub}>Pay</Text>
-      <Text style={styles.amount}>${amount}</Text>
-      {user && <Text style={styles.sub}>{user.email}</Text>}
-    </View>
+    <>
+      {user && <Text style={[styles.sub, styles.email]}>{user.email}</Text>}
+      <View style={styles.container}>
+        <Text style={styles.sub}>Pay</Text>
+        <Text style={styles.amount}>${amount}</Text>
+        {tax && <Text style={styles.sub}>Tax: ${tax}</Text>}
+      </View>
+    </>
   );
 };
 
@@ -35,6 +38,10 @@ const styles = StyleSheet.create({
   amount: {
     fontSize: FontSize.xxLarge,
     color: COLORS.primary,
+  },
+  email: {
+    marginLeft: 'auto',
+    marginBottom: 4,
   },
 });
 

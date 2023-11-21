@@ -9,6 +9,7 @@ export const useAsyncHandler = <T extends (...args: any) => any>(func: T) => {
     try {
       return await func(args);
     } catch (error: any) {
+      console.log(error, error?.response.data);
       if (error?.response?.status === 401) {
         logout();
       }
