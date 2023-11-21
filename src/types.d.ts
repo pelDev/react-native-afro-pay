@@ -22,8 +22,10 @@ export type TSuccessProps = {
 
 export type TAfroPayProps = {
   onSuccess: CallableFunction;
+  onClose: CallableFunction;
 };
 
 export type TBottomSheetUIProps = {
   onSuccess: CallableFunction;
+  onClose: CallableFunction;
 };

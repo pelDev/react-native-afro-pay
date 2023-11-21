@@ -7,5 +7,5 @@ export { useAfroPay } from './hooks/useAfroPay';
 export { AfroPayProvider } from './context/AfroPayContext';
 
 export default function AfroPay(props: TAfroPayProps) {
-  return <BottomSheetUI onSuccess={props.onSuccess} />;
+  return <BottomSheetUI {...props} />;
 }

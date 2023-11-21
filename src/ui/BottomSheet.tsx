@@ -22,69 +22,22 @@ import {
 } from '../services/PaymentService';
 import type { TBottomSheetUIProps } from '../types';
 
-const SheetContent = (props: TBottomSheetUIProps) => {
-  const { loading, loggedIn, currentAmount, user, logout, sheetRef } =
+type TSheetContentProps = {
+  success: string;
+  tax: number | null;
+  paying: boolean;
+  reset: CallableFunction;
+  handleQuote: () => Promise<void>;
+  handlePay: () => Promise<void>;
+};
+
+const SheetContent = (props: TSheetContentProps) => {
+  const { success, tax, paying, reset, handlePay, handleQuote } = props;
+
+  const { loading, loggedIn, currentAmount, user, logout } =
     useAfroPayContext();
 
   const handleSwitchAccount = () => logout();
-
-  const httpPostPaymentQuote =
-    useAsyncHandler<typeof postPaymentQuote>(postPaymentQuote);
-
-  const httpPostPaymentTransfer =
-    useAsyncHandler<typeof postPaymentTransfer>(postPaymentTransfer);
-
-  const [paying, setLoading] = useState(false);
-  const [tax, setTax] = useState<number | null>(null);
-  const [success, setSuccess] = useState('');
-
-  const handleQuote = async () => {
-    try {
-      setLoading(true);
-
-      const quoteResponse = await httpPostPaymentQuote(+currentAmount);
-
-      if (!quoteResponse) return;
-
-      setTax(quoteResponse.data.amountToPay - +currentAmount);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePay = async () => {
-    if (!tax) return;
-
-    try {
-      setLoading(true);
-
-      const transferRresponse = await httpPostPaymentTransfer(
-        +currentAmount + tax
-      );
-
-      if (transferRresponse) {
-        setSuccess(transferRresponse.data?.message);
-
-        setTimeout(() => {
-          sheetRef.current?.close();
-          reset();
-          props.onSuccess();
-        }, 3000);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const reset = () => {
-    setLoading(false);
-    setSuccess('');
-    setTax(null);
-  };
 
   if (loading) {
     return (
@@ -129,13 +82,16 @@ const SheetContent = (props: TBottomSheetUIProps) => {
 };
 
 export const BottomSheetUI = (props: TBottomSheetUIProps) => {
-  const { onSuccess } = props;
-  const { sheetRef, user, setUser } = useAfroPayContext();
+  const { sheetRef, user, currentAmount, setUser } = useAfroPayContext();
 
   const snapPoints = useMemo(
     () => [SHEET_POINTS.twentyFive, SHEET_POINTS.fifty, SHEET_POINTS.seventy],
     []
   );
+
+  const [paying, setLoading] = useState(false);
+  const [tax, setTax] = useState<number | null>(null);
+  const [success, setSuccess] = useState('');
 
   const httpGetLoggedInUser =
     useAsyncHandler<typeof getLoggedInUser>(getLoggedInUser);
@@ -150,6 +106,60 @@ export const BottomSheetUI = (props: TBottomSheetUIProps) => {
     }
   }, [user, setUser, httpGetLoggedInUser]);
 
+  const httpPostPaymentQuote =
+    useAsyncHandler<typeof postPaymentQuote>(postPaymentQuote);
+
+  const httpPostPaymentTransfer =
+    useAsyncHandler<typeof postPaymentTransfer>(postPaymentTransfer);
+
+  const handleQuote = async () => {
+    try {
+      setLoading(true);
+
+      const quoteResponse = await httpPostPaymentQuote(+currentAmount);
+
+      if (!quoteResponse) return;
+
+      setTax(quoteResponse.data.amountToPay - +currentAmount);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reset = () => {
+    setLoading(false);
+    setSuccess('');
+    setTax(null);
+  };
+
+  const handlePay = async () => {
+    if (!tax) return;
+
+    try {
+      setLoading(true);
+
+      const transferRresponse = await httpPostPaymentTransfer(
+        +currentAmount + tax
+      );
+
+      if (transferRresponse) {
+        setSuccess(transferRresponse.data?.message);
+
+        setTimeout(() => {
+          sheetRef.current?.close();
+          reset();
+          props.onSuccess();
+        }, 3000);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <BottomSheet
       ref={sheetRef}
@@ -157,8 +167,16 @@ export const BottomSheetUI = (props: TBottomSheetUIProps) => {
       snapPoints={snapPoints}
       backdropComponent={BottomSheetBackdrop}
       enablePanDownToClose
+      onClose={reset}
     >
-      <SheetContent onSuccess={onSuccess} />
+      <SheetContent
+        handlePay={handlePay}
+        handleQuote={handleQuote}
+        paying={paying}
+        reset={reset}
+        success={success}
+        tax={tax}
+      />
     </BottomSheet>
   );
 };
