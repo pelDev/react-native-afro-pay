@@ -3,7 +3,6 @@ import { createContext, useState, type ReactNode, useCallback } from 'react';
 import * as storage from '../utils/AsyncStorage';
 import type BottomSheet from '@gorhom/bottom-sheet';
 import type { User } from '../types';
-import { getLoggedInUser } from '../services/AuthService';
 
 const sheetRef = React.createRef<BottomSheet>();
 
@@ -18,6 +17,7 @@ export type AfroPayContextType = {
   setLoginDetails: (data: any) => void;
   setupStoredCreds: () => void;
   logout: () => void;
+  setUser: (user: User) => void;
 };
 
 export const AfroPayContext = createContext<AfroPayContextType | undefined>(
@@ -57,15 +57,9 @@ export function AfroPayProvider({ children }: TAfroPayProviderProps) {
       if (storedToken) {
         setLoggedIn(true);
         setToken(storedToken);
-
-        const res = await getLoggedInUser();
-
-        if (res.data.user) {
-          setUser(res.data.user);
-        }
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error(error?.response?.status);
     } finally {
       setLoading(false);
     }
@@ -89,6 +83,7 @@ export function AfroPayProvider({ children }: TAfroPayProviderProps) {
         setLoginDetails,
         setCurrentAmount,
         logout,
+        setUser,
       }}
     >
       {children}

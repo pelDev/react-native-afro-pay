@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import {
   AfroPayContext,
@@ -17,6 +17,8 @@ import { useAfroPayContext } from '../hooks/useAfroPayContext';
 import LoginForm from '../components/LoginForm';
 import AmountCard from '../components/AmountCard';
 import CustomButton from '../components/Button/CustomButton';
+import { useAsyncHandler } from '../middlewares/async';
+import { getLoggedInUser } from '../services/AuthService';
 
 const SheetContent = () => {
   const { loading, loggedIn, currentAmount, user, logout } = useContext(
@@ -71,12 +73,25 @@ const SheetContent = () => {
 };
 
 export const BottomSheetUI = () => {
-  const { sheetRef } = useAfroPayContext();
+  const { sheetRef, user, setUser } = useAfroPayContext();
 
   const snapPoints = useMemo(
     () => [SHEET_POINTS.twentyFive, SHEET_POINTS.fifty, SHEET_POINTS.seventy],
     []
   );
+
+  const httpGetLoggedInUser =
+    useAsyncHandler<typeof getLoggedInUser>(getLoggedInUser);
+
+  useEffect(() => {
+    if (!user) {
+      httpGetLoggedInUser().then((res) => {
+        if (res && res.data.user) {
+          setUser(res.data.user);
+        }
+      });
+    }
+  }, [user, setUser, httpGetLoggedInUser]);
 
   return (
     <BottomSheet
