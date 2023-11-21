@@ -17,7 +17,6 @@ export type TAmountCardProps = {
 
 export type TSuccessProps = {
   message: string;
-  reset: CallableFunction;
 };
 
 export type TAfroPayProps = {

@@ -26,13 +26,12 @@ type TSheetContentProps = {
   success: string;
   tax: number | null;
   paying: boolean;
-  reset: CallableFunction;
   handleQuote: () => Promise<void>;
   handlePay: () => Promise<void>;
 };
 
 const SheetContent = (props: TSheetContentProps) => {
-  const { success, tax, paying, reset, handlePay, handleQuote } = props;
+  const { success, tax, paying, handlePay, handleQuote } = props;
 
   const { loading, loggedIn, currentAmount, user, logout } =
     useAfroPayContext();
@@ -52,7 +51,7 @@ const SheetContent = (props: TSheetContentProps) => {
   }
 
   if (success) {
-    return <Success message={success} reset={reset} />;
+    return <Success message={success} />;
   }
 
   return (
@@ -132,6 +131,7 @@ export const BottomSheetUI = (props: TBottomSheetUIProps) => {
     setLoading(false);
     setSuccess('');
     setTax(null);
+    props.onClose();
   };
 
   const handlePay = async () => {
@@ -173,7 +173,6 @@ export const BottomSheetUI = (props: TBottomSheetUIProps) => {
         handlePay={handlePay}
         handleQuote={handleQuote}
         paying={paying}
-        reset={reset}
         success={success}
         tax={tax}
       />
