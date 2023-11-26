@@ -6,7 +6,7 @@ let headers = {
 };
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/api/v1',
+  baseURL: 'http://ec2-3-210-151-119.compute-1.amazonaws.com:3000/api/v1',
   headers,
 });
 
